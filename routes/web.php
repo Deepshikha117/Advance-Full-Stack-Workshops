@@ -8,12 +8,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// List all students
+Route::get('/students', function () {
+    $students = Student::all();
+
+    return view('student.list', [
+        'students' => $students
+    ]);
+})->name('students.index');
+
 // Show the create student form
 Route::get('/students/create', function () {
     return view('student.create');
 });
 
-// Save the new student
 // Save the new student
 Route::post('/students', function (Request $request) {
     $validated = $request->validate([
@@ -26,5 +34,6 @@ Route::post('/students', function (Request $request) {
 
     $student = Student::create($validated);
 
-    return "Student {$student->name} created successfully!";
+    return redirect()->route('students.index')
+        ->with('success', "Student {$student->name} created successfully!");
 });
